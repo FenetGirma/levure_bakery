@@ -117,7 +117,7 @@ export default function Home() {
     {
       id: "bread",
       name: "Artisan Bread",
-      description: "Handcrafted sourdough and specialty loaves made with traditional techniques and organic levure.",
+      description: "Handcrafted sourdough and specialty loaves made with traditional techniques and organic flour.",
       image: "/images/artisan.png",
       color: "amber-400",
     },
@@ -222,7 +222,7 @@ export default function Home() {
       },
       {
         id: 3,
-        name: "levure Child Rye",
+        name: "Flour Child Rye",
         description: "Dark and dense with caraway",
         price: "$7",
         image: "/images/rye.png",
@@ -417,7 +417,7 @@ export default function Home() {
       title: "Sourcing",
       description: "We select only the finest organic ingredients from local farms and trusted suppliers.",
       details: [
-        "Organic levure from heritage wheat varieties",
+        "Organic flour from heritage wheat varieties",
         "Filtered water for optimal fermentation",
         "Sea salt harvested from pristine waters",
         "Natural yeast cultures developed in-house",
@@ -644,6 +644,7 @@ export default function Home() {
               </motion.button>
             </motion.div>
 
+            {/* Mobile Menu */}
             <Sheet>
               <SheetTrigger asChild className="md:hidden">
                 <Button variant="ghost" size="icon" className={scrolled ? "text-cream" : "text-forest-900"}>
@@ -651,23 +652,53 @@ export default function Home() {
                   <span className="sr-only">Menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent className="bg-forest-50">
-                <div className="flex flex-col gap-6 mt-12">
-                  {[
-                    { id: "hero", label: "The Oven" },
-                    { id: "products", label: "Today's Rise" },
-                    { id: "about", label: "Our Recipe" },
-                    { id: "process", label: "How We Rise" },
-                    { id: "contact", label: "Find Our Hearth" },
-                  ].map((section) => (
-                    <a
-                      key={section.id}
-                      href={`#${section.id}`}
-                      className="text-2xl uppercase tracking-widest text-forest-800 font-display"
+              <SheetContent side="right" className="bg-white border-l border-forest-100 p-0 w-full max-w-xs">
+                <div className="flex flex-col h-full">
+                  <div className="p-6 border-b border-forest-100">
+                    <div className="font-display tracking-widest text-xl flex items-center gap-2 text-forest-900">
+                      <div className="w-7 h-7 bg-forest-800 rounded-md flex items-center justify-center">
+                        <Wheat className="h-4 w-4 text-cream" />
+                      </div>
+                      Levure
+                    </div>
+                  </div>
+
+                  <div className="flex-1 overflow-auto py-6">
+                    <nav className="flex flex-col space-y-1">
+                      {[
+                        { id: "hero", label: "The Oven", icon: <Wheat className="h-4 w-4" /> },
+                        { id: "products", label: "Today's Rise", icon: <ShoppingBag className="h-4 w-4" /> },
+                        { id: "about", label: "Our Recipe", icon: <Users className="h-4 w-4" /> },
+                        { id: "process", label: "How We Rise", icon: <Clock className="h-4 w-4" /> },
+                        { id: "contact", label: "Find Our Hearth", icon: <MapPin className="h-4 w-4" /> },
+                      ].map((section) => (
+                        <a
+                          key={section.id}
+                          href={`#${section.id}`}
+                          className={cn(
+                            "flex items-center gap-3 px-6 py-3 text-forest-800 hover:bg-forest-50 transition-colors",
+                            activeSection === section.id && "bg-forest-50 text-forest-900 font-medium",
+                          )}
+                        >
+                          {section.icon}
+                          <span>{section.label}</span>
+                          {activeSection === section.id && (
+                            <div className="ml-auto w-1 h-6 bg-forest-800 rounded-full" />
+                          )}
+                        </a>
+                      ))}
+                    </nav>
+                  </div>
+
+                  <div className="p-6 border-t border-forest-100">
+                    <Button
+                      className="w-full bg-forest-800 hover:bg-forest-700 text-white flex items-center gap-2"
+                      onClick={() => setCartOpen(true)}
                     >
-                      {section.label}
-                    </a>
-                  ))}
+                      <ShoppingCart className="h-4 w-4" />
+                      View Cart ({getTotalItems()})
+                    </Button>
+                  </div>
                 </div>
               </SheetContent>
             </Sheet>
@@ -772,16 +803,23 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="max-w-xl pl-6"
+              className={cn("max-w-xl", isMobile ? "px-2" : "pl-6")}
             >
               <div className="inline-block mb-4 px-3 py-1 bg-forest-50 rounded-full text-forest-800 text-xs font-medium tracking-wider">
                 Artisanal Bakery • Est. 2023
               </div>
 
-              <h1 className="flex text-5xl md:text-7xl font-display mb-6 text-forest-800 leading-tight">
+              <h1
+                className={cn(
+                  "flex font-display mb-6 text-forest-800 leading-tight",
+                  isMobile ? "text-4xl" : "text-5xl md:text-7xl",
+                )}
+              >
                 Taste The Difference
               </h1>
-              <p className="text-lg md:text-xl text-forest-700/80 mb-10">Our artisanal approach to food</p>
+              <p className={cn("text-forest-700/80 mb-10", isMobile ? "text-base" : "text-lg md:text-xl")}>
+                Our artisanal approach to food
+              </p>
 
               <div className="flex flex-wrap gap-4">
                 <Button
@@ -839,24 +877,28 @@ export default function Home() {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="relative"
             >
-              <div className="absolute top-1/4 right-6 bg-white/90 text-teal-700 font-medium px-6 py-2 rounded-full shadow-md z-10">
+              <div className="absolute top-1/4 left-6 bg-white/90 text-teal-700 font-medium px-6 py-2 rounded-full shadow-md z-10">
                 Freshly Baked
               </div>
               {/* Decorative curved lines */}
-              <svg
-                className="absolute -left-20 top-1/2 transform -translate-y-1/2 w-40 h-80 text-amber-400/30"
-                viewBox="0 0 100 200"
-                fill="none"
-              >
-                <path d="M100,0 C60,40 0,60 0,100 C0,140 60,160 100,200" stroke="currentColor" strokeWidth="2" />
-              </svg>
-              <svg
-                className="absolute -right-10 top-1/3 transform -translate-y-1/2 w-40 h-60 text-red-400/20"
-                viewBox="0 0 100 150"
-                fill="none"
-              >
-                <path d="M0,0 C40,30 100,50 100,75 C100,100 40,120 0,150" stroke="currentColor" strokeWidth="2" />
-              </svg>
+              {!isMobile && (
+                <>
+                  <svg
+                    className="absolute -left-20 top-1/2 transform -translate-y-1/2 w-40 h-80 text-amber-400/30"
+                    viewBox="0 0 100 200"
+                    fill="none"
+                  >
+                    <path d="M100,0 C60,40 0,60 0,100 C0,140 60,160 100,200" stroke="currentColor" strokeWidth="2" />
+                  </svg>
+                  <svg
+                    className="absolute -right-10 top-1/3 transform -translate-y-1/2 w-40 h-60 text-red-400/20"
+                    viewBox="0 0 100 150"
+                    fill="none"
+                  >
+                    <path d="M0,0 C40,30 100,50 100,75 C100,100 40,120 0,150" stroke="currentColor" strokeWidth="2" />
+                  </svg>
+                </>
+              )}
 
               {/* Main product image */}
               <div className="relative rounded-full overflow-hidden border-8 border-white shadow-xl mx-auto max-w-md">
@@ -874,37 +916,42 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.6 }}
-                className="absolute -bottom-16 -left-12 bg-forest-800 text-white shadow-lg rounded-2xl p-6 max-w-[280px]"
+                className={cn(
+                  "absolute -bottom-16 right-0 bg-forest-800 text-white shadow-lg rounded-2xl p-6",
+                  isMobile ? "max-w-[220px] p-4 -bottom-12" : "max-w-[280px]",
+                )}
               >
-                <div className="grid grid-cols-2 gap-6">
+                <div className={cn("grid grid-cols-2 gap-6", isMobile && "gap-3")}>
                   <div className="text-center">
-                    <p className="text-4xl font-display text-amber-400">24h</p>
-                    <p className="text-sm text-cream/80 mt-1">Fermentation</p>
+                    <p className={cn("font-display text-amber-400", isMobile ? "text-3xl" : "text-4xl")}>24h</p>
+                    <p className={cn("text-cream/80 mt-1", isMobile && "text-xs")}>Fermentation</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-4xl font-display text-amber-400">5</p>
-                    <p className="text-sm text-cream/80 mt-1">Ingredients</p>
+                    <p className={cn("font-display text-amber-400", isMobile ? "text-3xl" : "text-4xl")}>5</p>
+                    <p className={cn("text-cream/80 mt-1", isMobile && "text-xs")}>Ingredients</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-4xl font-display text-amber-400">350°</p>
-                    <p className="text-sm text-cream/80 mt-1">Baking Temp</p>
+                    <p className={cn("font-display text-amber-400", isMobile ? "text-3xl" : "text-4xl")}>350°</p>
+                    <p className={cn("text-cream/80 mt-1", isMobile && "text-xs")}>Baking Temp</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-4xl font-display text-amber-400">15</p>
-                    <p className="text-sm text-cream/80 mt-1">Varieties</p>
+                    <p className={cn("font-display text-amber-400", isMobile ? "text-3xl" : "text-4xl")}>15</p>
+                    <p className={cn("text-cream/80 mt-1", isMobile && "text-xs")}>Varieties</p>
                   </div>
                 </div>
               </motion.div>
 
-              {/* Modern featured product highlight */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.8 }}
-                className="absolute -bottom-12 right-0 md:right-10 left-0 md:left-auto mx-auto md:mx-0 max-w-sm backdrop-blur-md bg-white/80 border border-white/20 rounded-xl -hide-hidden shadow-xl"
-              >
-                <div className="h-1 w-full bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200"></div>
-              </motion.div>
+              {/* Modern featured product highlight - only shown on desktop */}
+              {!isMobile && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.8 }}
+                  className="absolute -bottom-12 right-0 md:right-10 left-0 md:left-auto mx-auto md:mx-0 max-w-sm backdrop-blur-md bg-white/80 border border-white/20 rounded-xl overflow-hidden shadow-xl"
+                >
+                  <div className="h-1 w-full bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200"></div>
+                </motion.div>
+              )}
             </motion.div>
           </div>
         </div>
@@ -1273,7 +1320,7 @@ export default function Home() {
           >
             <h2 className="text-4xl md:text-6xl font-display mb-6 text-forest-900">How We Rise</h2>
             <p className="text-lg text-forest-800/80 max-w-2xl mx-auto">
-              No shortcuts. Just time, love, and heat. From levure to fresh-out-the-oven, here's our bread's journey.
+              No shortcuts. Just time, love, and heat. From flour to fresh-out-the-oven, here's our bread's journey.
             </p>
           </motion.div>
 
@@ -1458,8 +1505,8 @@ export default function Home() {
 
             <div className="md:w-1/3 flex flex-col md:items-end">
               <div className="flex items-center gap-4 mb-2">
-                <a href="mailto:hello@levurebakery.com" className="text-sm hover:text-forest-300 transition-colors">
-                  hello@levurebakery.com
+                <a href="mailto:hello@flourbakery.com" className="text-sm hover:text-forest-300 transition-colors">
+                  hello@flourbakery.com
                 </a>
                 <a href="tel:+12125550123" className="text-sm hover:text-forest-300 transition-colors">
                   (212) 555-0123
@@ -1483,7 +1530,7 @@ export default function Home() {
               <div className="w-6 h-6 bg-forest-800 rounded-md flex items-center justify-center">
                 <Wheat className="h-3 w-3 text-cream" />
               </div>
-              <span className="text-xs text-forest-800 font-medium">levure © {new Date().getFullYear()}</span>
+              <span className="text-xs text-forest-800 font-medium">FLOUR © {new Date().getFullYear()}</span>
             </div>
             <div className="flex items-center gap-6">
               <div className="flex gap-4">
@@ -1548,7 +1595,7 @@ export default function Home() {
                 <div className="mb-4">
                   <h3 className="text-xs uppercase tracking-wider opacity-70 mb-1">Ingredients</h3>
                   <p className="text-sm font-light text-forest-800">
-                    Organic levure, filtered water, sea salt, natural yeast culture, and time.
+                    Organic flour, filtered water, sea salt, natural yeast culture, and time.
                   </p>
                 </div>
 
